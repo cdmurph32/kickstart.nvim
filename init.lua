@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -105,7 +105,7 @@ vim.opt.number = true
 -- vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
+vim.opt.mouse = ''
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -113,7 +113,7 @@ vim.opt.showmode = false
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.opt.clipboard = 'unnamedplus'
+vim.opt.clipboard = ''
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -724,6 +724,51 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'copilot' },
+        },
+        formatting = {
+          expandable_indicator = true,
+          fields = { 'kind', 'abbr', 'menu' },
+          format = function(entry, vim_item)
+            local kind_icons = {
+              Text = '󰊄',
+              Method = '',
+              Function = '󰡱',
+              Constructor = '👷',
+              Field = '',
+              Variable = '󰫧',
+              Class = 'i',
+              Interface = '',
+              Module = '󰕳',
+              Property = '󱁦',
+              Unit = '',
+              Value = '',
+              Enum = '',
+              Keyword = '',
+              Color = '🖌',
+              File = '📂',
+              Reference = '',
+              Folder = '󰲂',
+              EnumMember = '',
+              Constant = 'C',
+              Struct = '',
+              Event = '',
+              Operator = '',
+              TypeParameter = '󰛦',
+              Copilot = '🐙',
+              Snippet = '🐌',
+            }
+            -- Kind icons
+            vim_item.kind = string.format('%s', kind_icons[vim_item.kind])
+            -- vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
+            vim_item.menu = ({
+              nvim_lsp = '[LSP]',
+              luasnip = '[Snippet]',
+              path = '[Path]',
+              copilot = '[Copilot]',
+            })[entry.source.name]
+            return vim_item
+          end,
         },
       }
     end,
@@ -766,7 +811,7 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- require('mini.surround').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -791,7 +836,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'html', 'lua', 'typescript', 'markdown', 'rust', 'vim', 'vimdoc', 'zig' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -836,7 +881,7 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
