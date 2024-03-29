@@ -21,6 +21,7 @@ return {
       require('copilot').setup {
         suggestion = { enabled = false },
         panel = { enabled = false },
+        copilot_node_command = vim.fn.expand '$HOME' .. '/.nvm/versions/node/v18.20.0/bin/node', -- Node.js version must be > 18.x
       }
     end,
   },
@@ -31,6 +32,10 @@ return {
     end,
   },
   'tpope/vim-fugitive',
+  {
+    'mrcjkb/rustaceanvim',
+    version = '^4', -- Recommended
+    ft = { 'rust' },
+  },
   vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal left<CR>'),
-  copilot_node_command = vim.fn.expand '$HOME' .. '/.nvm/versions/node/v18.19.1/bin/node',
 }
