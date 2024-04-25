@@ -122,8 +122,8 @@ vim.opt.breakindent = true
 vim.opt.undofile = true
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+vim.opt.ignorecase = false
+vim.opt.smartcase = false
 
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
