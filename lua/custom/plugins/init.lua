@@ -32,10 +32,19 @@ return {
     end,
   },
   'tpope/vim-fugitive',
+  'tpope/vim-abolish',
   {
     'mrcjkb/rustaceanvim',
     version = '^4', -- Recommended
     ft = { 'rust' },
+  },
+  {
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    ft = { 'markdown' },
+    build = function()
+      vim.fn['mkdp#util#install']()
+    end,
   },
   vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal left<CR>'),
 }
