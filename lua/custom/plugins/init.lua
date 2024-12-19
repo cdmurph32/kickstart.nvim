@@ -4,6 +4,13 @@
 -- See the kickstart.nvim README for more information
 return {
   {
+    'vhyrro/luarocks.nvim',
+    priority = 1000, -- Very high priority is required, luarocks.nvim should run as the first plugin in your config.
+    opts = {
+      rocks = { 'tiktoken_core' },
+    },
+  },
+  {
     'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',
     dependencies = {
@@ -33,14 +40,14 @@ return {
   },
   {
     'CopilotC-Nvim/CopilotChat.nvim',
-    branch = 'canary',
+    branch = 'main',
     dependencies = {
       { 'zbirenbaum/copilot.lua' }, -- or github/copilot.vim
-      { 'nvim-lua/plenary.nvim' }, -- for curl, log wrapper
+      { 'nvim-lua/plenary.nvim', branch = 'master' }, -- for curl, log wrapper
     },
     build = 'make tiktoken', -- Only on MacOS or Linux
     opts = {
-      debug = true, -- Enable debugging
+      -- debug = true, -- Enable debugging
       -- See Configuration section for rest
     },
     -- See Commands section for default commands if you want to lazy load on them
@@ -49,8 +56,8 @@ return {
   'tpope/vim-abolish',
   {
     'mrcjkb/rustaceanvim',
-    version = '^4', -- Recommended
-    ft = { 'rust' },
+    version = '^5', -- Recommended
+    lazy = false,
   },
   {
     'iamcco/markdown-preview.nvim',
