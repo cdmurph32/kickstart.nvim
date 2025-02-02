@@ -49,6 +49,13 @@ return {
     opts = {
       -- debug = true, -- Enable debugging
       -- See Configuration section for rest
+      window = {
+        layout = 'float',
+        relative = 'cursor',
+        width = 1,
+        height = 0.4,
+        row = 1,
+      },
     },
     -- See Commands section for default commands if you want to lazy load on them
   },
@@ -68,11 +75,20 @@ return {
     end,
   },
   vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal left<CR>'),
-  vim.keymap.set('n', '<leader>ccq', function()
+  vim.keymap.set({ 'n', 'v' }, '<leader>ccq', function()
+    local select = require 'CopilotChat.select'
     local input = vim.fn.input 'Quick Chat: '
     if input ~= '' then
-      require('CopilotChat').ask(input, { selection = require('CopilotChat.select').buffer })
+      require('CopilotChat').ask(input, {
+        selection = function(source)
+          return select.visual(source) or select.buffer(source)
+        end,
+      })
     end
   end, { desc = 'CopilotChat - Quick chat' }),
   vim.keymap.set('n', '<leader>cco', ':CopilotChatOpen'),
+  vim.keymap.set('n', '<leader>ccp', function()
+    local actions = require 'CopilotChat.actions'
+    require('CopilotChat.integrations.telescope').pick(actions.prompt_actions())
+  end, { desc = 'CopilotChat - Prompt actions' }),
 }
