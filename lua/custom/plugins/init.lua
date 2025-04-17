@@ -34,6 +34,7 @@ return {
   },
   {
     'zbirenbaum/copilot-cmp',
+    dependencies = { 'nvim-cmp' },
     config = function()
       require('copilot_cmp').setup()
     end,
