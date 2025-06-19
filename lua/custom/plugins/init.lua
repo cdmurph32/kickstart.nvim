@@ -81,6 +81,17 @@ return {
       vim.fn['mkdp#util#install']()
     end,
   },
+  {
+    'klen/nvim-config-local',
+    opts = {
+      config_files = { '.nvim.lua', '.nvimrc', '.nvim/local.vim', '.nvimrc.lua' }, -- Files to look for in your repo
+      hashfile = vim.fn.stdpath 'data' .. '/config-local', -- Where to store hashes for trusted files
+      autocommands_create = true, -- Create autocommands (recommended)
+      commands_create = true, -- Create commands (ConfigLocalSource, ConfigLocalEdit, etc.)
+      silent = false, -- Show notifications when loading local config
+      lookup_parents = true, -- Lookup config files in parent directories
+    },
+  },
   vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal left<CR>'),
   vim.keymap.set({ 'n', 'v' }, '<leader>ccq', function()
     local select = require 'CopilotChat.select'
