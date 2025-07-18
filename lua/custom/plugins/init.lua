@@ -68,9 +68,11 @@ return {
   },
   'tpope/vim-fugitive',
   'tpope/vim-abolish',
+  'tpope/vim-rhubarb', -- Only for GitHub. For custom Git servers, use vim-gf or configure a handler.
+  'ruanyl/vim-gh-line', -- Supports GBrowse-like functionality for GitHub and custom Git servers.
   {
     'mrcjkb/rustaceanvim',
-    version = '^5', -- Recommended
+    version = '^6', -- Recommended
     lazy = false,
   },
   {
