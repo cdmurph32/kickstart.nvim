@@ -81,6 +81,10 @@ return {
           disconnect = '⏏',
         },
       },
+      floating = {
+        max_height = 0.9, -- 90% of screen height
+        max_width = 0.9, -- 50% of screen width
+      },
     }
 
     -- Change breakpoint icons
