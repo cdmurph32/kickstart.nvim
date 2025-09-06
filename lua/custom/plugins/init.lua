@@ -40,6 +40,9 @@ return {
     end,
   },
   {
+    'giuxtaposition/blink-cmp-copilot',
+  },
+  {
     'CopilotC-Nvim/CopilotChat.nvim',
     branch = 'main',
     dependencies = {
@@ -48,20 +51,15 @@ return {
     },
     build = 'make tiktoken', -- Only on MacOS or Linux
     model = 'copilot:gpt-4',
-    providers = {
-      github_models = {
-        disables = true,
-      },
-    },
     opts = {
       -- debug = true, -- Enable debugging
       -- See Configuration section for rest
       window = {
-        layout = 'float',
-        relative = 'cursor',
-        width = 1,
-        height = 0.4,
-        row = 1,
+        layout = 'vertical',
+        relative = 'editor',
+        width = 0.4,
+        height = 1,
+        row = 0,
       },
     },
     -- See Commands section for default commands if you want to lazy load on them
@@ -94,6 +92,45 @@ return {
       lookup_parents = true, -- Lookup config files in parent directories
     },
   },
+  {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'nvim-neotest/nvim-nio',
+      'nvim-lua/plenary.nvim',
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'mrcjkb/rustaceanvim',
+      'nvim-neotest/neotest-jest',
+      'marilari88/neotest-vitest',
+    },
+    -- Configure neotest to use rustaceanvim for Rust
+    config = function()
+      local neotest = require 'neotest'
+      neotest.setup {
+        adapters = {
+          require 'rustaceanvim.neotest',
+          require 'neotest-jest',
+          require 'neotest-vitest',
+        },
+      }
+      -- Set up keybindings
+      local map = vim.keymap.set
+      --local opts = { noremap = true, silent = true }
+
+      map('n', '<leader>tt', function()
+        neotest.run.run()
+      end, { desc = 'Run nearest test' }) -- Run nearest test
+      map('n', '<leader>tf', function()
+        neotest.run.run(vim.fn.expand '%')
+      end, { desc = 'Run current file' })
+      map('n', '<leader>td', function()
+        neotest.run.run { strategy = 'dap' }
+      end, { desc = 'Run with debugger' })
+      map('n', '<leader>to', function()
+        neotest.output.open()
+      end, { desc = 'Open output' })
+    end,
+  },
   vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal left<CR>'),
   vim.keymap.set({ 'n', 'v' }, '<leader>ccq', function()
     local select = require 'CopilotChat.select'
@@ -111,4 +148,20 @@ return {
     local actions = require 'CopilotChat.actions'
     require('CopilotChat.integrations.telescope').pick(actions.prompt_actions())
   end, { desc = 'CopilotChat - Prompt actions' }),
+  vim.api.nvim_create_user_command('CopilotEnableSuggestions', function()
+    require('copilot').setup {
+      suggestion = { enabled = true },
+      panel = { enabled = false },
+      copilot_node_command = vim.fn.expand '$HOME' .. '/.nvm/versions/node/v22/bin/node',
+    }
+    vim.notify('Copilot suggestions enabled', vim.log.levels.INFO)
+  end, {}),
+  vim.api.nvim_create_user_command('CopilotDisableSuggestions', function()
+    require('copilot').setup {
+      suggestion = { enabled = false },
+      panel = { enabled = false },
+      copilot_node_command = vim.fn.expand '$HOME' .. '/.nvm/versions/node/v22/bin/node',
+    }
+    vim.notify('Copilot suggestions disabled', vim.log.levels.INFO)
+  end, {}),
 }
