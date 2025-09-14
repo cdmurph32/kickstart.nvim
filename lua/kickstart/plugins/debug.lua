@@ -23,6 +23,7 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'mxsdev/nvim-dap-vscode-js',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -81,6 +82,13 @@ return {
     local dap = require 'dap'
     local dapui = require 'dapui'
 
+    -- Register js-debug-adapter
+    require('dap-vscode-js').setup {
+      debugger_path = vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter',
+      -- Set the correct entrypoint for the new Mason structure:
+      debugger_cmd = { 'node', vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js' },
+      adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
+    }
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
@@ -172,5 +180,68 @@ return {
         args = {},
       },
     }
+    -- Node.js (TypeScript) configuration using js-debug-adapter (installed via mason)
+    dap.configurations.typescript = {
+      {
+        type = 'pwa-node',
+        request = 'launch',
+        name = 'Launch TypeScript file',
+        program = '${file}',
+        cwd = vim.fn.getcwd(),
+        runtimeExecutable = 'node',
+        sourceMaps = true,
+        protocol = 'inspector',
+        console = 'integratedTerminal',
+        outFiles = { '${workspaceFolder}/dist/**/*.js' },
+      },
+      {
+        type = 'pwa-node',
+        request = 'attach',
+        name = 'Attach to process',
+        processId = require('dap.utils').pick_process,
+        cwd = vim.fn.getcwd(),
+      },
+      {
+        type = 'pwa-node',
+        request = 'launch',
+        name = 'Debug Vitest Current File',
+        runtimeExecutable = 'node',
+        runtimeArgs = {
+          './node_modules/vitest/vitest.mjs',
+          'run',
+          '${file}',
+          '--inspect-brk',
+          '--threads=false', -- optional: disables worker threads for easier debugging
+        },
+        rootPath = '${workspaceFolder}',
+        cwd = '${workspaceFolder}',
+        console = 'integratedTerminal',
+        internalConsoleOptions = 'neverOpen',
+        skipFiles = { '<node_internals>/**', 'node_modules/**' },
+      },
+    }
   end,
+  vim.schedule(function()
+    -- Workaround for nvim-dap-vscode-js adapter registration issue (see: https://github.com/mxsdev/nvim-dap-vscode-js/issues/58)
+    local function get_pkg_path(pkg, path)
+      pcall(require, 'mason')
+      local root = vim.env.MASON or (vim.fn.stdpath 'data' .. '/mason')
+      path = path or ''
+      local ret = root .. '/packages/' .. pkg .. '/' .. path
+      return ret
+    end
+
+    require('dap').adapters['pwa-node'] = {
+      type = 'server',
+      host = 'localhost',
+      port = '${port}',
+      executable = {
+        command = 'node',
+        args = {
+          get_pkg_path('js-debug-adapter', '/js-debug/src/dapDebugServer.js'),
+          '${port}',
+        },
+      },
+    }
+  end),
 }
