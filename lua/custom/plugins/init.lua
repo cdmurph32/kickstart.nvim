@@ -93,6 +93,17 @@ return {
     },
   },
   {
+    'mxsdev/nvim-dap-vscode-js',
+    dependencies = { 'mfussenegger/nvim-dap' },
+    event = 'VeryLazy', -- or remove event to always load
+    config = function()
+      require('dap-vscode-js').setup {
+        debugger_path = vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter',
+        debugger_cmd = { 'node', vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js' },
+      }
+    end,
+  },
+  {
     'nvim-neotest/neotest',
     dependencies = {
       'nvim-neotest/nvim-nio',
