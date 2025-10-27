@@ -191,7 +191,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<Esc>', '<Esc>', { noremap = true })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -226,6 +226,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.hl.on_yank()
   end,
+})
+
+-- Reload file if changed outside of Neovim
+vim.api.nvim_create_autocmd({ 'FocusGained', 'TermClose', 'TermLeave', 'BufEnter' }, {
+  command = 'checktime',
 })
 
 -- Set tabstop and shiftwidth to 2 for TypeScript files (editing)
@@ -933,20 +938,46 @@ require('lazy').setup({
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+      -- Better Around/Inside textobjects with non-conflicting keybindings
+      require('mini.ai').setup {
+        n_lines = 500,
+        mappings = {
+          -- Use different prefixes to avoid conflicts
+          around = 'gza',
+          inside = 'gzi',
+          around_next = 'gzan',
+          inside_next = 'gzin',
+          around_last = 'gzal',
+          inside_last = 'gzil',
+        },
+      }
 
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- Add/delete/replace surroundings with non-conflicting keybindings
+      require('mini.surround').setup {
+        mappings = {
+          add = 'gza', -- Add surrounding
+          delete = 'gzd', -- Delete surrounding
+          replace = 'gzr', -- Replace surrounding
+          find = 'gzf', -- Find surrounding
+          find_left = 'gzF', -- Find left surrounding
+          highlight = 'gzh', -- Highlight surrounding
+          update_n_lines = 'gzn', -- Update n_lines
+          suffix_last = 'l', -- Suffix for last
+          suffix_next = 'n', -- Suffix for next
+        },
+      }
+
+      -- Comment functionality with non-conflicting keybindings
+      require('mini.comment').setup {
+        mappings = {
+          -- Toggle comment line
+          comment_line = '<leader>cc',
+          -- Toggle comment block
+          comment_block = '<leader>cb',
+          -- Toggle comment textobject
+          textobject = '<leader>c',
+        },
+      }
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,

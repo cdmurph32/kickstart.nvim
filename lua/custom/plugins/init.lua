@@ -111,7 +111,6 @@ return {
       'antoinemadec/FixCursorHold.nvim',
       'nvim-treesitter/nvim-treesitter',
       'mrcjkb/rustaceanvim',
-      'nvim-neotest/neotest-jest',
       'marilari88/neotest-vitest',
     },
     -- Configure neotest to use rustaceanvim for Rust
@@ -120,7 +119,6 @@ return {
       neotest.setup {
         adapters = {
           require 'rustaceanvim.neotest',
-          require 'neotest-jest',
           require 'neotest-vitest',
         },
       }
@@ -143,7 +141,7 @@ return {
     end,
   },
   vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal left<CR>'),
-  vim.keymap.set({ 'n', 'v' }, '<leader>ccq', function()
+  vim.keymap.set({ 'n', 'v' }, '<leader>cpq', function()
     local select = require 'CopilotChat.select'
     local input = vim.fn.input 'Quick Chat: '
     if input ~= '' then
@@ -154,8 +152,8 @@ return {
       })
     end
   end, { desc = 'CopilotChat - Quick chat' }),
-  vim.keymap.set('n', '<leader>cco', ':CopilotChatOpen'),
-  vim.keymap.set('n', '<leader>ccp', function()
+  vim.keymap.set('n', '<leader>cpo', ':CopilotChatOpen'),
+  vim.keymap.set('n', '<leader>cpp', function()
     local actions = require 'CopilotChat.actions'
     require('CopilotChat.integrations.telescope').pick(actions.prompt_actions())
   end, { desc = 'CopilotChat - Prompt actions' }),
@@ -175,4 +173,5 @@ return {
     }
     vim.notify('Copilot suggestions disabled', vim.log.levels.INFO)
   end, {}),
+  vim.keymap.set('t', '<C-[>', [[<C-\><C-n>]]), --Use Ctrl+[ to exit terminal mode (non-conflicting alternative to Esc)
 }
