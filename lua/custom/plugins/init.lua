@@ -176,5 +176,4 @@ return {
     }
     vim.notify('Copilot suggestions disabled', vim.log.levels.INFO)
   end, {}),
-  vim.keymap.set('t', '<C-[>', [[<C-\><C-n>]]), --Use Ctrl+[ to exit terminal mode (non-conflicting alternative to Esc)
 }
