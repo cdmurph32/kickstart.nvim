@@ -143,6 +143,32 @@ return {
       end, { desc = 'Open output' })
     end,
   },
+  {
+    'greggh/claude-code.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('claude-code').setup {
+        refresh = {
+          enable = true,
+          updatetime = 100,
+          timer_interval = 1000,
+          show_notifications = true,
+        },
+        git = { use_git_root = true },
+        window = {
+          position = 'vertical',
+          split_ratio = 0.3,
+          enter_insert = true,
+        },
+        keymaps = {
+          toggle = {
+            normal = '<C-,>',
+            terminal = '<C-,>',
+          },
+        },
+      }
+    end,
+  },
   vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal left<CR>'),
   vim.keymap.set({ 'n', 'v' }, '<leader>cpq', function()
     local select = require 'CopilotChat.select'

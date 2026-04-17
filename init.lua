@@ -239,10 +239,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function() vim.hl.on_yank() end,
 })
 
--- Reload file if changed outside of Neovim
-vim.api.nvim_create_autocmd({ 'FocusGained', 'TermClose', 'TermLeave', 'BufEnter' }, {
-  command = 'checktime',
-})
 
 -- Set tabstop and shiftwidth to 2 for TypeScript files (editing)
 vim.api.nvim_create_autocmd('FileType', {
