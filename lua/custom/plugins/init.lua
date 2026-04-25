@@ -38,9 +38,7 @@ return {
   {
     'zbirenbaum/copilot-cmp',
     dependencies = { 'nvim-cmp' },
-    config = function()
-      require('copilot_cmp').setup()
-    end,
+    config = function() require('copilot_cmp').setup() end,
   },
   {
     'giuxtaposition/blink-cmp-copilot',
@@ -80,9 +78,7 @@ return {
     'iamcco/markdown-preview.nvim',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
     ft = { 'markdown' },
-    build = function()
-      vim.fn['mkdp#util#install']()
-    end,
+    build = function() vim.fn['mkdp#util#install']() end,
   },
   {
     'klen/nvim-config-local',
@@ -100,6 +96,7 @@ return {
     dependencies = { 'mfussenegger/nvim-dap' },
     event = 'VeryLazy', -- or remove event to always load
     config = function()
+      ---@diagnostic disable-next-line: missing-fields
       require('dap-vscode-js').setup {
         debugger_path = vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter',
         debugger_cmd = { 'node', vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js' },
@@ -119,6 +116,7 @@ return {
     -- Configure neotest to use rustaceanvim for Rust
     config = function()
       local neotest = require 'neotest'
+      ---@diagnostic disable-next-line: missing-fields
       neotest.setup {
         adapters = {
           require 'rustaceanvim.neotest',
@@ -129,18 +127,11 @@ return {
       local map = vim.keymap.set
       --local opts = { noremap = true, silent = true }
 
-      map('n', '<leader>tt', function()
-        neotest.run.run()
-      end, { desc = 'Run nearest test' }) -- Run nearest test
-      map('n', '<leader>tf', function()
-        neotest.run.run(vim.fn.expand '%')
-      end, { desc = 'Run current file' })
-      map('n', '<leader>td', function()
-        neotest.run.run { strategy = 'dap' }
-      end, { desc = 'Run with debugger' })
-      map('n', '<leader>to', function()
-        neotest.output.open()
-      end, { desc = 'Open output' })
+      map('n', '<leader>tt', function() neotest.run.run() end, { desc = 'Run nearest test' }) -- Run nearest test
+      map('n', '<leader>tf', function() neotest.run.run(vim.fn.expand '%') end, { desc = 'Run current file' })
+      ---@diagnostic disable-next-line: missing-fields
+      map('n', '<leader>td', function() neotest.run.run { strategy = 'dap' } end, { desc = 'Run with debugger' })
+      map('n', '<leader>to', function() neotest.output.open() end, { desc = 'Open output' })
     end,
   },
   {
@@ -160,12 +151,6 @@ return {
           split_ratio = 0.3,
           enter_insert = true,
         },
-        keymaps = {
-          toggle = {
-            normal = '<C-,>',
-            terminal = '<C-,>',
-          },
-        },
       }
     end,
   },
@@ -175,9 +160,8 @@ return {
     local input = vim.fn.input 'Quick Chat: '
     if input ~= '' then
       require('CopilotChat').ask(input, {
-        selection = function(source)
-          return select.visual(source) or select.buffer(source)
-        end,
+        ---@diagnostic disable-next-line: deprecated
+        selection = function(source) return select.visual(source) or select.buffer(source) end,
       })
     end
   end, { desc = 'CopilotChat - Quick chat' }),
@@ -186,20 +170,4 @@ return {
     local actions = require 'CopilotChat.actions'
     require('CopilotChat.integrations.telescope').pick(actions.prompt_actions())
   end, { desc = 'CopilotChat - Prompt actions' }),
-  vim.api.nvim_create_user_command('CopilotEnableSuggestions', function()
-    require('copilot').setup {
-      suggestion = { enabled = true },
-      panel = { enabled = false },
-      copilot_node_command = vim.fn.expand '$HOME' .. '/.nvm/versions/node/v22/bin/node',
-    }
-    vim.notify('Copilot suggestions enabled', vim.log.levels.INFO)
-  end, {}),
-  vim.api.nvim_create_user_command('CopilotDisableSuggestions', function()
-    require('copilot').setup {
-      suggestion = { enabled = false },
-      panel = { enabled = false },
-      copilot_node_command = vim.fn.expand '$HOME' .. '/.nvm/versions/node/v22/bin/node',
-    }
-    vim.notify('Copilot suggestions disabled', vim.log.levels.INFO)
-  end, {}),
 }
