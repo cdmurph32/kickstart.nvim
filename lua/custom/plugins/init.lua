@@ -151,6 +151,11 @@ return {
           split_ratio = 0.3,
           enter_insert = true,
         },
+        keymaps = {
+          toggle = {
+            normal = '<leader>cc',
+          },
+        },
       }
     end,
   },

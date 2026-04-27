@@ -892,17 +892,7 @@ require('lazy').setup({
         },
       }
 
-      -- Comment functionality with non-conflicting keybindings
-      require('mini.comment').setup {
-        mappings = {
-          -- Toggle comment line
-          comment_line = '<leader>cc',
-          -- Toggle comment block
-          comment_block = '<leader>cb',
-          -- Toggle comment textobject
-          textobject = '<leader>c',
-        },
-      }
+      require('mini.comment').setup {}
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
