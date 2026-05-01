@@ -65,6 +65,17 @@ return {
     },
     -- See Commands section for default commands if you want to lazy load on them
   },
+  {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      local gs = require 'gitsigns'
+      gs.setup {}
+      vim.keymap.set('n', ']h', function() gs.nav_hunk 'next' end, { desc = 'Next hunk' })
+      vim.keymap.set('n', '[h', function() gs.nav_hunk 'prev' end, { desc = 'Prev hunk' })
+      vim.keymap.set('n', ']H', function() gs.nav_hunk('next', { target = 'unstaged' }) end, { desc = 'Next unstaged hunk' })
+      vim.keymap.set('n', '[H', function() gs.nav_hunk('prev', { target = 'unstaged' }) end, { desc = 'Prev unstaged hunk' })
+    end,
+  },
   'tpope/vim-fugitive',
   'tpope/vim-abolish',
   'tpope/vim-rhubarb', -- Only for GitHub. For custom Git servers, use vim-gf or configure a handler.
