@@ -76,7 +76,19 @@ return {
       vim.keymap.set('n', '[H', function() gs.nav_hunk('prev', { target = 'unstaged' }) end, { desc = 'Prev unstaged hunk' })
     end,
   },
-  'tpope/vim-fugitive',
+  {
+    'tpope/vim-fugitive',
+    config = function()
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "FugitiveIndex",
+        callback = function()
+          vim.cmd('wincmd H')
+          vim.api.nvim_win_set_width(0, 80)
+          vim.wo.winfixwidth = true
+        end,
+      })
+    end,
+  },
   'tpope/vim-abolish',
   'tpope/vim-rhubarb', -- Only for GitHub. For custom Git servers, use vim-gf or configure a handler.
   'ruanyl/vim-gh-line', -- Supports GBrowse-like functionality for GitHub and custom Git servers.
@@ -168,6 +180,39 @@ return {
           },
         },
       }
+    end,
+  },
+  {
+    'nickjvandyke/opencode.nvim',
+    version = '*',
+    dependencies = {
+      {
+        'folke/snacks.nvim',
+        optional = true,
+        opts = { input = {}, picker = {} },
+      },
+    },
+    config = function()
+      vim.g.opencode_opts = {}
+      vim.o.autoread = true
+      local oc = require 'opencode'
+      vim.keymap.set({ 'n', 'x' }, '<leader>oa', function() oc.ask('@this: ', { submit = true }) end, { desc = 'Ask opencode' })
+      vim.keymap.set({ 'n', 'x' }, '<leader>ox', function() oc.select() end, { desc = 'Opencode select action' })
+      vim.keymap.set({ 'n', 't' }, '<leader>oo', function()
+        vim.fn.jobstart('pgrep -x ollama > /dev/null || ollama serve &', { detach = true })
+        vim.defer_fn(function()
+          vim.fn.jobstart({
+            'curl',
+            '-s',
+            '-X',
+            'POST',
+            'http://localhost:11434/api/generate',
+            '-d',
+            '{"model":"gemma4:26b-a4b-it-q4_K_M","keep_alive":"10m"}',
+          }, { detach = true })
+          oc.toggle()
+        end, 1500)
+      end, { desc = 'Toggle opencode' })
     end,
   },
   vim.keymap.set('n', '<leader>n', ':Neotree filesystem reveal left<CR>'),
